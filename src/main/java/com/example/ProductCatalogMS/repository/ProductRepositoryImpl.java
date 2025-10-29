@@ -2,7 +2,7 @@ package com.example.ProductCatalogMS.repository;
 
 import com.example.ProductCatalogMS.model.Product;
 import com.example.ProductCatalogMS.projection.ProductListItem;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -10,8 +10,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
-
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     private final MongoTemplate mongoTemplate;

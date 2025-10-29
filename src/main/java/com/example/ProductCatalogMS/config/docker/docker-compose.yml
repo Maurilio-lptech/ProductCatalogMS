@@ -1,19 +1,20 @@
 version: '3.8'
+
 services:
   mongodb:
-    image: mongo:6.0
-    container_name: mongodb-container
+    image: mongo:latest
+    container_name: my-mongo
     restart: unless-stopped
     ports:
-      - "27017:27017" # la porta di MongoDB (default)
+      - "27017:27017"
     environment:
-      # variabili d'ambiente
-      MONGO_INITDB_ROOT_USERNAME: user_admin
-      MONGO_INITDB_ROOT_PASSWORD: secret_password
-      MONGO_INITDB_DATABASE: databaseName
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_DATABASE: productCatalogDB
+
     volumes:
-      - mongodb_data:/data/db # Persistenza dei dati
+      - mongo-data:/data/db
+      # - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro  # opzionale
 
 volumes:
-  mongodb_data:
-    driver: local
+  mongo-data:
