@@ -3,19 +3,13 @@ package com.example.ProductCatalogMS.serviceTest;
 import com.example.ProductCatalogMS.dto.ProductDto;
 import com.example.ProductCatalogMS.mapper.ProductMapper;
 import com.example.ProductCatalogMS.model.Product;
-import com.example.ProductCatalogMS.projection.ProductListItem;
 import com.example.ProductCatalogMS.repository.ProductRepository;
 import com.example.ProductCatalogMS.service.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.util.Assert;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -41,8 +35,10 @@ public class ProductServiceImplTest {
 
     @BeforeEach
     void initial() {
+        //generate a random uuid for each test
         this.productId = UUID.randomUUID().toString();
 
+        //generate a product for test
         this.product = new Product();
         product.setId(productId);
         product.setName("Test product");
@@ -51,6 +47,7 @@ public class ProductServiceImplTest {
         product.setAvailableQuantity(10);
         product.setPrice(1.99);
 
+        //generate a product dto for test
         this.productDto = new ProductDto();
         productDto.setId(product.getId());
         productDto.setName(product.getName());
@@ -61,7 +58,7 @@ public class ProductServiceImplTest {
     }
 
     @Test
-    public void FindbyId_WhenProductExist() {
+    public void findbyId_WhenProductExist() {
 
         when(productRepository.findById(productId))
                 .thenReturn(Optional.of(product));
@@ -70,22 +67,28 @@ public class ProductServiceImplTest {
 
         ProductDto response = service.findById(productId);
 
+        //verify if the product repository is called 1 time
         verify(productRepository, times(1)).findById(productId);
+        //assert for the productId output is equal to productId input
         assertEquals(productId, response.getId());
     }
 
     @Test
-    public void FindbyId_WhenProductNotExist() {
+    public void findbyId_WhenProductNotExist() {
 
         when(productRepository.findById(productId))
                 .thenReturn(Optional.empty());
 
+        //assert if productRepository lounch an exception if no find a product
         assertThrows(Exception.class, () -> {
             service.findById(productId);
         }, "launch an exception for no find product");
 
+        //verify if the product repository is called 1 time
         verify(productRepository, times(1)).findById(product.getId());
 
     }
+
+
 
 }
