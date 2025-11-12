@@ -14,12 +14,11 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = ProductServiceImpl.class)
-public class ProductServiceImplTest {
+class ProductServiceImplTest {
 
     @MockitoBean
     private ProductRepository productRepository;
@@ -58,7 +57,7 @@ public class ProductServiceImplTest {
     }
 
     @Test
-    public void findbyId_WhenProductExist() {
+    void findbyId_WhenProductExist() {
 
         when(productRepository.findById(productId))
                 .thenReturn(Optional.of(product));
@@ -74,12 +73,12 @@ public class ProductServiceImplTest {
     }
 
     @Test
-    public void findbyId_WhenProductNotExist() {
+    void findbyId_WhenProductNotExist() {
 
         when(productRepository.findById(productId))
                 .thenReturn(Optional.empty());
 
-        //assert if productRepository lounch an exception if no find a product
+        //assert productRepository lounch an exception if no find a product
         assertThrows(Exception.class, () -> {
             service.findById(productId);
         }, "launch an exception for no find product");
@@ -89,6 +88,96 @@ public class ProductServiceImplTest {
 
     }
 
+    @Test
+    void addNewProduct() {
 
+        Product savedProduct = new Product();
+        savedProduct.setId(productId + "!1341");
+        savedProduct.setName(product.getName());
+        savedProduct.setDescription(product.getDescription());
+        savedProduct.setCategory(product.getCategory());
+        savedProduct.setPrice(product.getPrice());
+        savedProduct.setAvailableQuantity(product.getAvailableQuantity());
 
+        ProductDto savedProductDto = new ProductDto();
+        savedProductDto.setId(savedProduct.getId());
+        savedProductDto.setName(savedProduct.getName());
+        savedProductDto.setDescription(savedProduct.getDescription());
+        savedProductDto.setCategory(savedProduct.getCategory());
+        savedProductDto.setPrice(savedProduct.getPrice());
+        savedProductDto.setAvailableQuantity(savedProduct.getAvailableQuantity());
+
+        when(mapper.toEntity(productDto)).thenReturn(product);
+
+        when(productRepository.save(product)).thenReturn(savedProduct);
+
+        when(mapper.toDto(savedProduct)).thenReturn(savedProductDto);
+
+        ProductDto response = service.add(productDto);
+
+        verify(productRepository, times(1)).save(product);
+
+        assertNotEquals(productDto.getId(), response.getId());
+        assertEquals(savedProductDto.getId(), savedProduct.getId());
+        assertEquals(savedProductDto.getName(), productDto.getName());
+        assertEquals(savedProduct.getName(), product.getName());
+
+    }
+
+    @Test
+    void removeProductOK() {
+
+        when(productRepository.existsById(productId)).thenReturn(true);
+
+        service.remove(productId);
+
+        verify(productRepository, times(1)).existsById(productId);
+        verify(productRepository, times(1)).deleteById(productId);
+    }
+
+    @Test
+    void removeProductKO() {
+
+        when(productRepository.existsById(productId)).thenReturn(false);
+
+        assertThrows(Exception.class, () -> {
+            service.remove(productId);
+        }, "launch an exception for no find product");
+
+        verify(productRepository, times(1)).existsById(productId);
+    }
+
+    @Test
+    void modifiedProduct(){
+
+        Product savedProduct = new Product();
+        savedProduct.setId(productId + "!1341");
+        savedProduct.setName("nuovo nome");
+        savedProduct.setDescription(product.getDescription());
+        savedProduct.setCategory("nuova categoria");
+        savedProduct.setPrice(product.getPrice());
+        savedProduct.setAvailableQuantity(product.getAvailableQuantity());
+
+        ProductDto savedProductDto = new ProductDto();
+        savedProductDto.setId(savedProduct.getId());
+        savedProductDto.setName(savedProduct.getName());
+        savedProductDto.setDescription(savedProduct.getDescription());
+        savedProductDto.setCategory(savedProduct.getCategory());
+        savedProductDto.setPrice(savedProduct.getPrice());
+        savedProductDto.setAvailableQuantity(savedProduct.getAvailableQuantity());
+
+        when(productRepository.findById(productId)).thenReturn(Optional.ofNullable(product));
+
+        when(productRepository.save(product)).thenReturn(savedProduct);
+
+        when(mapper.toDto(savedProduct)).thenReturn(savedProductDto);
+
+        ProductDto response = service.put(productDto, productId);
+
+        verify(productRepository, times(1)).findById(productId);
+
+        assertNotEquals(productDto.getId(), savedProductDto.getId());
+        assertNotEquals(savedProductDto.getName(), product.getName());
+        assertNotEquals(savedProductDto.getCategory(), product.getCategory());
+    }
 }
