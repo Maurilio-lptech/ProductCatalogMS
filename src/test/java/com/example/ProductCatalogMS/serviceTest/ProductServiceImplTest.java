@@ -172,7 +172,7 @@ class ProductServiceImplTest {
 
         when(mapper.toDto(savedProduct)).thenReturn(savedProductDto);
 
-        ProductDto response = service.put(productDto, productId);
+        service.put(productDto, productId);
 
         verify(productRepository, times(1)).findById(productId);
 
@@ -180,4 +180,6 @@ class ProductServiceImplTest {
         assertNotEquals(savedProductDto.getName(), product.getName());
         assertNotEquals(savedProductDto.getCategory(), product.getCategory());
     }
+
+
 }
