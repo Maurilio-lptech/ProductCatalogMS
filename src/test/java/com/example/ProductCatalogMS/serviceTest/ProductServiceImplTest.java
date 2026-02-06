@@ -134,10 +134,10 @@ class ProductServiceImplTest {
 
     @Test
     void removeProductKO() {
-        String id = "1";
-        doThrow(new RuntimeException("Error")).when(productRepository).deleteById(id);
 
-        assertThrows(RuntimeException.class, () -> service.remove(id));
+        doThrow(new RuntimeException("Error")).when(productRepository).deleteById(productId);
+
+        assertThrows(RuntimeException.class, () -> service.remove(productId));
     }
 
     @Test
