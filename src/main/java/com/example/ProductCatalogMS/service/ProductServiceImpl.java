@@ -47,10 +47,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto put(ProductDto productDto, String id) {
         log.info("Attempting to update product with id: {}", id);
-        Product existingProduct = productRepository.findById(id).orElseThrow(() -> {
-            log.error("Update failed: Product with id: {} not found", id);
-            return new IllegalArgumentException("Product with id: " + id + " not found");
-        });
+        Product existingProduct = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Product with id: " + id + " not found"));
 
         existingProduct.setName(productDto.getName());
         existingProduct.setCategory(productDto.getCategory());
@@ -64,12 +61,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void remove(String id) {
         log.info("Attempting to delete product with id: {}", id);
-        if (productRepository.existsById(id)) {
+        try {
             productRepository.deleteById(id);
             log.info("Product with id: {} successfully deleted", id);
-        } else {
-            log.error("Delete failed: Product with id: {} not found", id);
-            throw new IllegalArgumentException("Product with id: " + id + " not found");
+        } catch (Exception e) {
+            log.error("Error in delete method for id: {} ", id, e);
+            throw new RuntimeException(e);
         }
     }
 }

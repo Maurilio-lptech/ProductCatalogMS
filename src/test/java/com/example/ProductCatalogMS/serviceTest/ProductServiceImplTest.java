@@ -127,24 +127,17 @@ class ProductServiceImplTest {
     @Test
     void removeProductOK() {
 
-        when(productRepository.existsById(productId)).thenReturn(true);
-
         service.remove(productId);
 
-        verify(productRepository, times(1)).existsById(productId);
         verify(productRepository, times(1)).deleteById(productId);
     }
 
     @Test
     void removeProductKO() {
+        String id = "1";
+        doThrow(new RuntimeException("Error")).when(productRepository).deleteById(id);
 
-        when(productRepository.existsById(productId)).thenReturn(false);
-
-        assertThrows(Exception.class, () -> {
-            service.remove(productId);
-        }, "launch an exception for no find product");
-
-        verify(productRepository, times(1)).existsById(productId);
+        assertThrows(RuntimeException.class, () -> service.remove(id));
     }
 
     @Test
