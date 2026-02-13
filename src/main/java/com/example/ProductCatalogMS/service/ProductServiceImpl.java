@@ -28,7 +28,6 @@ public class ProductServiceImpl implements ProductService {
         Page<ProductListItem> products = productRepository.findAllProjected(pageable);
         log.info("Found {} products in the current page", products.getNumberOfElements());
         return products;
-
     }
 
     @Override

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class ProductDto {
-
+    @Null(message = "if u want add a product i need a null id! ")
     private String id;
 
     @NotBlank(message = "The product name is required.")

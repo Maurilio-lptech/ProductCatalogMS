@@ -8,8 +8,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -31,7 +33,7 @@ public class ProductController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product list retrieve whit success.")
     })
-    ResponseEntity<Page<ProductListItem>> findAll(Pageable pageable) {
+    ResponseEntity<Page<ProductListItem>> findAll(@ParameterObject Pageable pageable) {
         log.info("Call the endpoint, Find all, received");
         return ResponseEntity.ok(service.findAll(pageable));
     }
@@ -57,7 +59,7 @@ public class ProductController {
             @ApiResponse(responseCode = "201", description = "Product Created whit success."),
             @ApiResponse(responseCode = "400", description = "No valid input"),
     })
-    ResponseEntity<ProductDto> add(ProductDto productDto) {
+    ResponseEntity<ProductDto> add(@Valid @RequestBody ProductDto productDto) {
         log.info("Call the endpoint for add new product, received");
         return new ResponseEntity<>(service.add(productDto), HttpStatus.CREATED);
     }
@@ -70,7 +72,7 @@ public class ProductController {
             @ApiResponse(responseCode = "400", description = "No valid input"),
             @ApiResponse(responseCode = "404", description = "PRODUCT NOT FOUND")
     })
-    ResponseEntity<ProductDto> put(ProductDto productDto,
+    ResponseEntity<ProductDto> put(@Valid @RequestBody ProductDto productDto,
                                    @Parameter(description = "ID unique of product to be modified", example = "ABC12312")
                                    @PathVariable String id) {
         log.info("Call the endpoint for modify a product, received");
