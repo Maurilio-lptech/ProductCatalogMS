@@ -23,9 +23,9 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper mapper;
 
     @Override
-    public Page<ProductListItem> findAll(Pageable pageable) {
+    public Page<Product> findAll(Pageable pageable) {
         log.info("Fetching a page of products with pageable: {}", pageable);
-        Page<ProductListItem> products = productRepository.findAllProjected(pageable);
+        Page<Product> products = productRepository.findAll(pageable);
         log.info("Found {} products in the current page", products.getNumberOfElements());
         return products;
     }

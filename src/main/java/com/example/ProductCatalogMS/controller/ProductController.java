@@ -1,6 +1,7 @@
 package com.example.ProductCatalogMS.controller;
 
 import com.example.ProductCatalogMS.dto.ProductDto;
+import com.example.ProductCatalogMS.model.Product;
 import com.example.ProductCatalogMS.projection.ProductListItem;
 import com.example.ProductCatalogMS.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,7 +34,7 @@ public class ProductController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product list retrieve whit success.")
     })
-    ResponseEntity<Page<ProductListItem>> findAll(@ParameterObject Pageable pageable) {
+    ResponseEntity<Page<Product>> findAll(@ParameterObject Pageable pageable) {
         log.info("Call the endpoint, Find all, received");
         return ResponseEntity.ok(service.findAll(pageable));
     }

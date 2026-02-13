@@ -16,7 +16,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public Page<ProductListItem> findAllProjected(Pageable pageable) {
+    public Page<Product> findAll(Pageable pageable) {
 
         Query query = new Query();
 
@@ -24,10 +24,10 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
         query.with(pageable);
 
-        List<ProductListItem> content = mongoTemplate.find(
+        List<Product> content = mongoTemplate.find(
                 query,
-                ProductListItem.class, // <-- Proietta direttamente sul tipo di Proiezione
-                "product" // Nome della collezione
+                Product.class, // <-- Proietta direttamente sul tipo di Proiezione
+                "products" // Nome della collezione
         );
 
         // uso l'interfaccia PageImpl per creare l'oggetto da restituire
